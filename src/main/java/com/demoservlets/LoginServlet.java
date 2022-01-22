@@ -2,6 +2,7 @@ package com.demoservlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.regex.Pattern;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 	urlPatterns = { "/LoginServlet" },
 	initParams = {
 			@WebInitParam(name = "user" , value = "Nikhil"),
-			@WebInitParam(name = "password" , value = "Nikhil")
+			@WebInitParam(name = "password" , value = "Nikhil010")
 	}
 )
 public class LoginServlet extends HttpServlet {
@@ -29,6 +30,17 @@ public class LoginServlet extends HttpServlet {
 		
 		String userID = getServletConfig().getInitParameter("user");
 		String password = getServletConfig().getInitParameter("password");
+
+		/** UC-3:- Extend the Servlet to accept a valid Name. **/
+		boolean userPatternCheck = Pattern.compile("^[A-Z]{1}[a-z]{2,}$").matcher(user).matches();
+		
+		if(userPatternCheck != true) {
+			RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
+			PrintWriter out = response.getWriter();
+			out.println("<font color=red>Name pattern not matched.</font>");
+			rd.include(request, response);
+			return;
+		}
 		
 		if(userID.equals(user) && password.equals(pwd)) {
 			request.setAttribute("user", user);
