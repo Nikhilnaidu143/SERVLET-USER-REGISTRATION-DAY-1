@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 	urlPatterns = { "/LoginServlet" },
 	initParams = {
 			@WebInitParam(name = "user" , value = "Nikhil"),
-			@WebInitParam(name = "password" , value = "Nikhil010")
+			@WebInitParam(name = "password" , value = "Nikhil@010")
 	}
 )
 public class LoginServlet extends HttpServlet {
@@ -42,6 +42,16 @@ public class LoginServlet extends HttpServlet {
 			return;
 		}
 		
+		/** UC-4:- Extend the Servlet to accept a valid password. **/
+		boolean passwordPatternCheck = Pattern.compile("^(?=.*[A-Z])(?=.*[0-9])(?=[\\w]*[\\W][\\w]*$)(?=.*[a-z]).{8,}$").matcher(pwd).matches();
+		
+		if(passwordPatternCheck != true) {
+			RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
+			PrintWriter out = response.getWriter();
+			out.println("<font color=red>Password pattern not matched.</font>");
+			rd.include(request, response);
+			return;
+		}
 		if(userID.equals(user) && password.equals(pwd)) {
 			request.setAttribute("user", user);
 			request.getRequestDispatcher("LoginSuccess.jsp").forward(request, response);
